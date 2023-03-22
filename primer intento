@@ -1,0 +1,63 @@
+import tkinter as tk
+from PIL import Image, ImageTk
+
+class Votacion:
+    def __init__(self):
+        # Candidatos
+        self.candidatos = ["Candidato 1", "Candidato 2", "Candidato 3", "Voto en blanco"]
+        
+        # Votos
+        self.votos = [0] * len(self.candidatos)
+        
+        # Imágenes de los candidatos
+        self.imagenes_candidatos = [
+            ImageTk.PhotoImage(Image.open("ruta/a/la/imagen/candidato1.png")),
+            ImageTk.PhotoImage(Image.open("ruta/a/la/imagen/candidato2.png")),
+            ImageTk.PhotoImage(Image.open("ruta/a/la/imagen/candidato3.png")),
+            ImageTk.PhotoImage(Image.open("ruta/a/la/imagen/blanco.png"))
+        ]
+
+        # Ventana principal
+        self.root = tk.Tk()
+        self.root.title("Programa de votación")
+
+        # Etiquetas y botones para cada candidato
+        self.labels = []
+        self.botones = []
+        for i, candidato in enumerate(self.candidatos):
+            label = tk.Label(self.root, image=self.imagenes_candidatos[i])
+            label.pack()
+            self.labels.append(label)
+            boton = tk.Button(self.root, text="Votar por " + candidato, command=lambda candidato=candidato: self.votar(candidato))
+            boton.pack()
+            self.botones.append(boton)
+
+        # Etiqueta para mostrar el resultado de la votación
+        self.resultado_label = tk.Label(self.root, text="")
+        self.resultado_label.pack()
+
+    def votar(self, candidato):
+        # Obtener el índice del candidato
+        i = self.candidatos.index(candidato)
+
+        # Verificar si ya votó
+        if self.votos[i] == 1:
+            self.resultado_label.config(text="Ya votó por " + candidato)
+        else:
+            # Incrementar el voto correspondiente
+            self.votos[i] += 1
+
+            # Desactivar los botones de los candidatos
+            for boton in self.botones:
+                boton.config(state=tk.DISABLED)
+
+            # Mostrar el resultado de la votación
+            self.resultado_label.config(text="Votó por " + candidato)
+
+    def run(self):
+        self.root.mainloop()
+
+# Programa principal
+if __name__ == "__main__":
+    votacion = Votacion()
+    votacion.run()
